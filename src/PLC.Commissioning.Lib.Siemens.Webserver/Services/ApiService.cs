@@ -1,6 +1,7 @@
 ﻿using Serilog;
 using Siemens.Simatic.S7.Webserver.API.Models;
 using Siemens.Simatic.S7.Webserver.API.Services.RequestHandling;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -30,9 +31,9 @@ namespace PLC.Commissioning.Lib.Siemens.Webserver.Services
         /// <returns>
         /// A task representing the asynchronous operation. The task result contains
         /// an IEnumerable of <see cref="ApiClass"/> representing the available API methods.
-        /// Returns null if the operation fails.
+        /// Returns an empty list if the operation fails.
         /// </returns>
-        public async Task<IEnumerable<ApiClass>?> BrowseMethodsAsync()
+        public async Task<IEnumerable<ApiClass>> BrowseMethodsAsync()
         {
             try
             {
@@ -42,7 +43,7 @@ namespace PLC.Commissioning.Lib.Siemens.Webserver.Services
                 var apiBrowseResponse = await _requestHandler.ApiBrowseAsync();
 
                 // Log the number of methods retrieved
-                var methodCount = apiBrowseResponse.Result.Count();
+                var methodCount = apiBrowseResponse.Result.Count;
                 Log.Information("Fetched {MethodCount} API methods.", methodCount);
 
                 // Debug log to print each method
@@ -58,7 +59,7 @@ namespace PLC.Commissioning.Lib.Siemens.Webserver.Services
             {
                 // Log the error
                 Log.Error(ex, "Error while browsing API methods.");
-                return null; // Return null to indicate failure
+                return new List<ApiClass>(); // Return an empty list to indicate failure
             }
         }
     }

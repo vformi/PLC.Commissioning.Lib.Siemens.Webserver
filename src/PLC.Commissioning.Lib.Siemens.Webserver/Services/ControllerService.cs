@@ -1,6 +1,7 @@
 ﻿using Serilog;
 using Siemens.Simatic.S7.Webserver.API.Enums;
 using Siemens.Simatic.S7.Webserver.API.Services.RequestHandling;
+using System;
 using System.Threading.Tasks;
 
 namespace PLC.Commissioning.Lib.Siemens.Webserver.Services
@@ -25,9 +26,9 @@ namespace PLC.Commissioning.Lib.Siemens.Webserver.Services
         /// Reads the current operating mode of the PLC.
         /// </summary>
         /// <returns>
-        /// A task representing the asynchronous operation. Returns the operating mode as a string if successful, or null if the operation fails.
+        /// A task representing the asynchronous operation. Returns the operating mode as a string if successful, or an empty string if the operation fails.
         /// </returns>
-        public async Task<string?> GetOperatingModeAsync()
+        public async Task<string> GetOperatingModeAsync()
         {
             try
             {
@@ -46,11 +47,10 @@ namespace PLC.Commissioning.Lib.Siemens.Webserver.Services
                 // Log the error
                 Log.Error(ex, "Error while reading PLC operating mode.");
 
-                // Return null to indicate the operation failed
-                return null;
+                // Return an empty string to indicate failure
+                return string.Empty;
             }
         }
-
 
         /// <summary>
         /// Changes the operating mode of the PLC.

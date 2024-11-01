@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using PLC.Commissioning.Lib.Siemens.Webserver.Services;
 using Siemens.Simatic.S7.Webserver.API.Services;
 using Siemens.Simatic.S7.Webserver.API.Services.RequestHandling;
+using System.Net;
 
 namespace PLC.Commissioning.Lib.Siemens.Webserver.Controllers
 {
@@ -59,8 +60,8 @@ namespace PLC.Commissioning.Lib.Siemens.Webserver.Controllers
         /// </summary>
         private static void SetupCertificateValidation()
         {
-            Log.Information("Setting up certificate validation...");
-            ServerCertificateCallback.CertificateCallback = (sender, cert, chain, sslPolicyErrors) => true;
+            Log.Information("Setting up global certificate validation callback...");
+            ServicePointManager.ServerCertificateValidationCallback = (sender, cert, chain, sslPolicyErrors) => true;
         }
     }
 }
