@@ -1,5 +1,10 @@
-# dt.PLC.Commissioning.Lib.Siemens.Webserver
-Webserver module that can be also used as a standalone library
+# PLC.Commissioning.Lib.Siemens.Webserver
+Webserver API that utilizes [S7.Webserver.API](https://github.com/siemens/simatic-s7-webserver-api). Used for standard read/write operations.
+
+> **Note**: This repository is a submodule of the main [PLC.Commissioning.Lib](https://github.com/vformi/PLC.Commissioning.Lib) project. It is intended to be used as part of the main project. But it can also be used independently
+
+# Supported languages
+- .NET Standard 2.0
 
 # Example usage:
 ```csharp
