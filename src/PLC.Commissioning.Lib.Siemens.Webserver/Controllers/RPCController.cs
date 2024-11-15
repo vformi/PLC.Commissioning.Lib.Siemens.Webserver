@@ -4,6 +4,8 @@ using PLC.Commissioning.Lib.Siemens.Webserver.Services;
 using Siemens.Simatic.S7.Webserver.API.Services;
 using Siemens.Simatic.S7.Webserver.API.Services.RequestHandling;
 using System.Net;
+using System;
+using System.Linq;
 
 namespace PLC.Commissioning.Lib.Siemens.Webserver.Controllers
 {
@@ -29,8 +31,6 @@ namespace PLC.Commissioning.Lib.Siemens.Webserver.Controllers
             ApiService = new ApiService(_requestHandler);
             PlcController = new ControllerService(_requestHandler);
             VariableService = new VariableService(_requestHandler);
-
-            Log.Information("RPCController initialized.");
         }
 
         /// <summary>
@@ -51,7 +51,6 @@ namespace PLC.Commissioning.Lib.Siemens.Webserver.Controllers
             var serviceFactory = new ApiStandardServiceFactory();
             var requestHandler = await serviceFactory.GetApiHttpClientRequestHandlerAsync(ipAddress, username, password);
 
-            // Return a new instance of RPCController with initialized services
             return new RPCController(requestHandler);
         }
 
@@ -62,6 +61,28 @@ namespace PLC.Commissioning.Lib.Siemens.Webserver.Controllers
         {
             Log.Information("Setting up global certificate validation callback...");
             ServicePointManager.ServerCertificateValidationCallback = (sender, cert, chain, sslPolicyErrors) => true;
+        }
+        
+        /// <summary>
+        /// Checks if the RPCController has the specified required API methods.
+        /// </summary>
+        /// <param name="requiredMethods">An array of method names that are required.</param>
+        /// <returns>True if all required methods are available; otherwise, false.</returns>
+        public bool HasRequiredMethods(string[] requiredMethods)
+        {
+            var availableMethods = ApiService.BrowseMethodsAsync().GetAwaiter().GetResult();
+            bool allMethodsAvailable = true;
+
+            foreach (var method in requiredMethods)
+            {
+                // Check if the required method is present in the available methods, case-insensitively
+                if (!availableMethods.Any(m => string.Equals(m.Name, method, StringComparison.OrdinalIgnoreCase)))
+                {
+                    Log.Warning($"Method '{method}' is missing in the available API methods.");
+                    allMethodsAvailable = false;
+                }
+            }
+            return allMethodsAvailable;
         }
     }
 }
